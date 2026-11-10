@@ -1,9 +1,9 @@
-const CACHE_NAME = 'work-tracker-v2';
+const CACHE_NAME = 'work-tracker-v3';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-'./icon.svg'
+'./icon.png'
 ];
 
 self.addEventListener('install', event => {
