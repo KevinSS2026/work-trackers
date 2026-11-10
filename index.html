@@ -169,8 +169,29 @@
     history.forEach((item, index) => {
         const row = document.createElement('div');
         row.className = 'record';
-        // Логика создания элементов списка и кнопок управления
-        // Полную структуру разметки и обработчики (изменить/удалить) можно развернуть по аналогии с шаблоном DOM-элементов
+                const info = document.createElement('div');
+        info.className = 'record-info';
+        const dur = document.createElement('div');
+        dur.className = 'record-duration';
+        dur.textContent = 'Отработано: ' + item.duration;
+        const times = document.createElement('div');
+        times.className = 'record-times';
+        times.textContent = 'Старт: ' + formatDateTime(item.start) + ' | Стоп: ' + formatDateTime(item.end);
+        info.append(dur, times);
+
+        const acts = document.createElement('div');
+        acts.className = 'record-actions';
+        const bEdit = document.createElement('button');
+        bEdit.className = 'btn-small btn-edit';
+        bEdit.textContent = 'Изменить';
+        bEdit.onclick = () => openEditModal(index);
+        const bDel = document.createElement('button');
+        bDel.className = 'btn-small btn-delete';
+        bDel.textContent = 'Удалить';
+        bDel.onclick = () => deleteRecord(index);
+        acts.append(bEdit, bDel);
+        row.append(info, acts);
+
         historyList.append(row);
     });
 }
