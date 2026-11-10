@@ -159,7 +159,6 @@
             font-size: 14px;
             padding: 20px 0;
         }
-        /* Модальное окно редактирования */
         .modal-overlay {
             display: none;
             position: fixed;
@@ -249,7 +248,6 @@
         <div id="historyList"></div>
     </div>
 
-    <!-- Окно редактирования смены -->
     <div class="modal-overlay" id="editModal">
         <div class="modal">
             <h2>Редактировать смену</h2>
@@ -303,6 +301,15 @@
             return `${hours} ч ${minutes} мин`;
         }
 
+        function getHistory() {
+            try {
+                const data = JSON.parse(localStorage.getItem('workHistory') || '[]');
+                return Array.isArray(data) ? data : [];
+            } catch (e) {
+                return [];
+            }
+        }
+
         function updateUI() {
             const activeStart = localStorage.getItem('activeWorkStart');
             
@@ -313,8 +320,20 @@
                 statusValue.textContent = 'Начало: ' + formatDateTime(Number(activeStart));
             } else {
                 btnStart.disabled = false;
-                btnStop.disabled = true;
-                statusLabel.textContent = 'Смена не начата';
-                statusValue.textContent = 'Нажмите «Старт»';
-            }
-
+localStorage.setItem('workHistory', JSON.stringify(history));
+updateUI();
+}
+}
+function clearHistory() {
+if (confirm('Удалить всю историю смен?')) {
+localStorage.removeItem('workHistory');
+updateUI();
+}
+}
+if ('serviceWorker' in navigator) {
+window.addEventListener('load', () => {
+navigator.serviceWorker.register('./sw.js')
+.catch(err => console.log('Ошибка регистрации SW:', err));
+});
+}
+updateUI();
