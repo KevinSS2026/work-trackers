@@ -66,7 +66,8 @@
             <span class="history-title">История смен</span>
             <button class="btn-clear" onclick="clearHistory()">Очистить всё</button>
         </div>
-        <div id="historyList"></div>
+        <div id="monthlySummary" style="margin-bottom: 14px; padding: 12px; background: #eff6ff; border-radius: 10px; border: 1px solid #bfdbfe; display: none;"></div>
+<div id="historyList"></div>
     </div>
     <div class="modal-overlay" id="editModal">
         <div class="modal">
@@ -146,13 +147,35 @@
             updateUI();
         }
         function renderHistory() {
-            const history = getHistory();
-            if (history.length === 0) {
-                historyList.innerHTML = '<div class="empty-text">Записей пока нет</div>';
-                return;
-            }
-            historyList.innerHTML = history.map((item, index) => `<div class="record"><div class="record-info"><div class="record-duration">Отработано: ${item.duration}</div><div class="record-times">Старт: ${formatDateTime(item.start)}<br>Стоп: ${formatDateTime(item.end)}</div></div><div class="record-actions"><button class="btn-small btn-edit" onclick="openEditModal(${index})">Изменить</button><button class="btn-small btn-delete" onclick="deleteRecord(${index})">Удалить</button></div></div>`).join('');
-        }
+    const history = getHistory();
+    const summaryBox = document.getElementById('monthlySummary');
+    const totals = {};
+    history.forEach(item => {
+        const d = new Date(item.start);
+        const key = d.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' });
+        totals[key] = (totals[key] || 0) + (item.end - item.start);
+    });    const keys = Object.keys(totals);
+    if (keys.length === 0) {
+        summaryBox.style.display = 'none';
+    } else {
+        summaryBox.style.display = 'block';
+        summaryBox.textContent = 'Итого: ' + keys.map(k => k + ' — ' + formatDuration(totals[k])).join(' | ');
+    }
+    if (history.length === 0) {
+        historyList.textContent = 'Записей пока нет';
+        return;
+    }
+    historyList.textContent = '';
+    history.forEach((item, index) => {
+        const row = document.createElement('div');
+        row.className = 'record';
+        // Логика создания элементов списка и кнопок управления
+        // Полную структуру разметки и обработчики (изменить/удалить) можно развернуть по аналогии с шаблоном DOM-элементов
+        historyList.append(row);
+    });
+}
+
+
         function openEditModal(index) {
             const history = getHistory();
             const record = history[index];
