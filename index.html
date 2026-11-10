@@ -178,7 +178,7 @@
             updateUI();
         }
         function deleteRecord(index) {
-            if (confirm('Удалить эту сменщ>')) {
+            if (confirm('Удалить эту смену>')) {
                 const history = getHistory();
                 history.splice(index, 1);
                 localStorage.setItem('workHistory', JSON.stringify(history));
