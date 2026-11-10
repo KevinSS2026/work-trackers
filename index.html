@@ -71,9 +71,6 @@
             <button id="btnStart" class="btn-start" onclick="startWork()">Старт</button>
             <button id="btnStop" class="btn-stop" onclick="stopWork()" disabled>Стоп</button>
         </div>
-    <div class="btn-group">
-      <button id="btnStart" class="btn-start">Старт</button>
-      <button id="btnStop" class="btn-stop" disabled>Стоп</button>
     </div>
 <button class="btn-norms" onclick="openNormsModal()">Нормы времени</button>
     </div>
@@ -157,7 +154,7 @@ const NORMS_DATA = [
   ['Бологое-Московское', 'пассажиром', '', '', '', '00:30', '', '', '', '', '', '', '', '00:15', '', '', '', '', '']
 ];
 
-const TOTAL_COLS =;
+const TOTAL_COLS =;[0][1]
 
 function renderNormsTable(filter = '') {
   const container = document.getElementById('normsTableContainer');
