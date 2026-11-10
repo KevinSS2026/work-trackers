@@ -7,239 +7,60 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://w3.org' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e293b'/><text x='50' y='68' font-size='55' text-anchor='middle' fill='white'>⏱️</text></svg>">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231e293b'/><text x='50' y='68' font-size='55' text-anchor='middle' fill='white'>⏱</text></svg>">
     <title>Учёт рабочего времени</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        }
-        body {
-            background-color: #f1f5f9;
-            color: #0f172a;
-            padding: 16px;
-            max-width: 500px;
-            margin: 0 auto;
-        }
-        .card {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 20px;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-            margin-bottom: 16px;
-        }
-        h1 {
-            font-size: 20px;
-            text-align: center;
-            margin-bottom: 16px;
-            color: #1e293b;
-        }
-        .status-box {
-            text-align: center;
-            padding: 16px;
-            background: #f8fafc;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #e2e8f0;
-        }
-        .status-label {
-            font-size: 14px;
-            color: #64748b;
-            margin-bottom: 4px;
-        }
-        .status-value {
-            font-size: 18px;
-            font-weight: 700;
-            color: #0f172a;
-        }
-        .active-dot {
-            display: inline-block;
-            width: 10px;
-            height: 10px;
-            background-color: #22c55e;
-            border-radius: 50%;
-            margin-right: 6px;
-        }
-        .btn-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-        button {
-            border: none;
-            border-radius: 12px;
-            padding: 16px;
-            font-size: 18px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: opacity 0.2s, transform 0.1s;
-        }
-        button:active {
-            transform: scale(0.98);
-        }
-        button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-            transform: none;
-        }
-        .btn-start {
-            background-color: #16a34a;
-            color: white;
-        }
-        .btn-stop {
-            background-color: #dc2626;
-            color: white;
-        }
-        .history-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-        }
-        .history-title {
-            font-size: 16px;
-            font-weight: 700;
-        }
-        .btn-clear {
-            background: none;
-            color: #ef4444;
-            font-size: 13px;
-            padding: 4px 8px;
-            font-weight: 600;
-        }
-        .record {
-            border-bottom: 1px solid #e2e8f0;
-            padding: 12px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 10px;
-        }
-        .record:last-child {
-            border-bottom: none;
-        }
-        .record-info {
-            flex: 1;
-        }
-        .record-duration {
-            font-size: 18px;
-            font-weight: 700;
-            color: #2563eb;
-            margin-bottom: 4px;
-        }
-        .record-times {
-            font-size: 13px;
-            color: #475569;
-            line-height: 1.4;
-        }
-        .record-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 6px;
-        }
-        .btn-small {
-            padding: 8px 12px;
-            font-size: 13px;
-            border-radius: 8px;
-            font-weight: 600;
-        }
-        .btn-edit {
-            background-color: #e2e8f0;
-            color: #1e293b;
-        }
-        .btn-delete {
-            background-color: #fee2e2;
-            color: #dc2626;
-        }
-        .empty-text {
-            text-align: center;
-            color: #94a3b8;
-            font-size: 14px;
-            padding: 20px 0;
-        }
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background: rgba(15, 23, 42, 0.6);
-            align-items: center;
-            justify-content: center;
-            padding: 16px;
-            z-index: 1000;
-        }
-        .modal-overlay.open {
-            display: flex;
-        }
-        .modal {
-            background: #ffffff;
-            border-radius: 16px;
-            padding: 20px;
-            width: 100%;
-            max-width: 400px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-        }
-        .modal h2 {
-            font-size: 18px;
-            margin-bottom: 16px;
-            color: #1e293b;
-        }
-        .form-group {
-            margin-bottom: 14px;
-        }
-        .form-group label {
-            display: block;
-            font-size: 13px;
-            color: #475569;
-            margin-bottom: 6px;
-            font-weight: 600;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid #cbd5e1;
-            border-radius: 10px;
-            font-size: 15px;
-            color: #0f172a;
-            background: #f8fafc;
-        }
-        .modal-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .btn-cancel {
-            background-color: #e2e8f0;
-            color: #334155;
-            font-size: 15px;
-            padding: 12px;
-        }
-        .btn-save {
-            background-color: #2563eb;
-            color: white;
-            font-size: 15px;
-            padding: 12px;
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+        body { background-color: #f1f5f9; color: #0f172a; padding: 16px; max-width: 500px; margin: 0 auto; }
+        .card { background: #ffffff; border-radius: 16px; padding: 20px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); margin-bottom: 16px; }
+        h1 { font-size: 20px; text-align: center; margin-bottom: 16px; color: #1e293b; }
+        .status-box { text-align: center; padding: 16px; background: #f8fafc; border-radius: 12px; margin-bottom: 20px; border: 1px solid #e2e8f0; }
+        .status-label { font-size: 14px; color: #64748b; margin-bottom: 4px; }
+        .status-value { font-size: 18px; font-weight: 700; color: #0f172a; }
+        .active-dot { display: inline-block; width: 10px; height: 10px; background-color: #22c55e; border-radius: 50%; margin-right: 6px; }
+        .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        button { border: none; border-radius: 12px; padding: 16px; font-size: 18px; font-weight: 700; cursor: pointer; transition: opacity 0.2s, transform 0.1s; }
+        button:active { transform: scale(0.98); }
+        button:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+        .btn-start { background-color: #16a34a; color: white; }
+        .btn-stop { background-color: #dc2626; color: white; }
+        .history-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+        .history-title { font-size: 16px; font-weight: 700; }
+        .btn-clear { background: none; color: #ef4444; font-size: 13px; padding: 4px 8px; font-weight: 600; }
+        .record { border-bottom: 1px solid #e2e8f0; padding: 12px 0; display: flex; justify-content: space-between; align-items: center; gap: 10px; }
+        .record:last-child { border-bottom: none; }
+        .record-info { flex: 1; }
+        .record-duration { font-size: 18px; font-weight: 700; color: #2563eb; margin-bottom: 4px; }
+        .record-times { font-size: 13px; color: #475569; line-height: 1.4; }
+        .record-actions { display: flex; flex-direction: column; gap: 6px; }
+        .btn-small { padding: 8px 12px; font-size: 13px; border-radius: 8px; font-weight: 600; }
+        .btn-edit { background-color: #e2e8f0; color: #1e293b; }
+        .btn-delete { background-color: #fee22e; color: #dc2626; }
+        .empty-text { text-align: center; color: #94a3b8; font-size: 14px; padding: 20px 0; }
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(15, 23, 42, 0.6); align-items: center; justify-content: center; padding: 16px; z-index: 1000; }
+        .modal-overlay.open { display: flex; }
+        .modal { background: #ffffff; border-radius: 16px; padding: 20px; width: 100%; max-width: 400px; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2); }
+        .modal h2 { font-size: 18px; margin-bottom: 16px; color: #1e293b; }
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 13px; color: #475569; margin-bottom: 6px; font-weight: 600; }
+        .form-group input { width: 100%; padding: 12px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 15px; color: #0f172a; background: #f8fafc; }
+        .modal-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .btn-cancel { background-color: #e2e8f0; color: #334155; font-size: 15px; padding: 12px; }
+        .btn-save { background-color: #2563eb; color: white; font-size: 15px; padding: 12px; }
     </style>
 </head>
 <body>
-
     <div class="card">
         <h1>Трекер рабочего времени</h1>
-        
         <div class="status-box">
             <div class="status-label" id="statusLabel">Смена не начата</div>
             <div class="status-value" id="statusValue">Нажмите «Старт»</div>
         </div>
-
         <div class="btn-group">
             <button id="btnStart" class="btn-start" onclick="startWork()">Старт</button>
             <button id="btnStop" class="btn-stop" onclick="stopWork()" disabled>Стоп</button>
         </div>
     </div>
-
     <div class="card">
         <div class="history-header">
             <span class="history-title">История смен</span>
@@ -247,7 +68,6 @@
         </div>
         <div id="historyList"></div>
     </div>
-
     <div class="modal-overlay" id="editModal">
         <div class="modal">
             <h2>Редактировать смену</h2>
@@ -266,7 +86,6 @@
             </div>
         </div>
     </div>
-
     <script>
         const btnStart = document.getElementById('btnStart');
         const btnStop = document.getElementById('btnStop');
@@ -274,25 +93,15 @@
         const statusValue = document.getElementById('statusValue');
         const historyList = document.getElementById('historyList');
         const editModal = document.getElementById('editModal');
-
         function formatDateTime(timestamp) {
             const d = new Date(timestamp);
-            return d.toLocaleDateString('ru-RU', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            }) + ' в ' + d.toLocaleTimeString('ru-RU', {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
+            return d.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' в ' + d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
         }
-
         function toLocalInputString(timestamp) {
             const d = new Date(timestamp);
             const offset = d.getTimezoneOffset() * 60000;
-            return new Date(d.getTime() - offset).toISOString().slice(0, 16);
+            return new Date(d.getTime() - offset).toISORtring().slice(0, 16);
         }
-
         function formatDuration(ms) {
             if (ms < 0) return '0 ч 0 мин';
             const totalMinutes = Math.floor(ms / 60000);
@@ -300,19 +109,14 @@
             const minutes = totalMinutes % 60;
             return `${hours} ч ${minutes} мин`;
         }
-
         function getHistory() {
             try {
                 const data = JSON.parse(localStorage.getItem('workHistory') || '[]');
                 return Array.isArray(data) ? data : [];
-            } catch (e) {
-                return [];
-            }
+            } catch (e) { return []; }
         }
-
         function updateUI() {
             const activeStart = localStorage.getItem('activeWorkStart');
-            
             if (activeStart) {
                 btnStart.disabled = true;
                 btnStop.disabled = false;
@@ -320,20 +124,77 @@
                 statusValue.textContent = 'Начало: ' + formatDateTime(Number(activeStart));
             } else {
                 btnStart.disabled = false;
-localStorage.setItem('workHistory', JSON.stringify(history));
-updateUI();
-}
-}
-function clearHistory() {
-if (confirm('Удалить всю историю смен?')) {
-localStorage.removeItem('workHistory');
-updateUI();
-}
-}
-if ('serviceWorker' in navigator) {
-window.addEventListener('load', () => {
-navigator.serviceWorker.register('./sw.js')
-.catch(err => console.log('Ошибка регистрации SW:', err));
-});
-}
-updateUI();
+                btnStop.disabled = true;
+                statusLabel.textContent = 'Смена не начата';
+                statusValue.textContent = 'Нажмите «Старт»';
+            }
+            renderHistory();
+        }
+        function startWork() {
+            localStorage.setItem('activeWorkStart', Date.now());
+            updateUI();
+        }
+        function stopWork() {
+            const startStr = localStorage.getItem('activeWorkStart');
+            if (!startStr) return;
+            const start = Number(startStr);
+            const end = Date.now();
+            const history = getHistory();
+            history.unshift({start: start, end: end, duration: formatDuration(end - start)});
+            localStorage.setItem('workHistory', JSON.stringify(history));
+            localStorage.removeItem('activeWorkStart');
+            updateUI();
+        }
+        function renderHistory() {
+            const history = getHistory();
+            if (history.length === 0) {
+                historyList.innerHTML = '<div class="empty-text">Записей пока нет</div>';
+                return;
+            }
+            historyList.innerHTML = history.map((item, index) => `<div class="record"><div class="record-info"><div class="record-duration">Отработано: ${item.duration}</div><div class="record-times">Старт: ${formatDateTime(item.start)}<br>Стоп: ${formatDateTime(item.end)}</div></div><div class="record-actions"><button class="btn-small btn-edit" onclick="openEditModal(${index})">Изменить</button><button class="btn-small btn-delete" onclick="deleteRecord(${index})">Удалить</button></div></div>`).join('');
+        }
+        function openEditModal(index) {
+            const history = getHistory();
+            const record = history[index];
+            if (!record) return;
+            document.getElementById('editIndex').value = index;
+            document.getElementById('editStart').value = toLocalInputString(record.start);
+            document.getElementById('editEnd').value = toLocalInputString(record.end);
+            editModal.classList.add('open');
+        }
+        function closeEditModal() { editModal.classList.remove('open'); }
+        function saveEdit() {
+            const index = Number(document.getElementById('editIndex').value);
+            const startVal = document.getElementById('editStart').value;
+            const endVal = document.getElementById('editEnd').value;
+            if (!startVal || !endVal) { alert('Заполните оба поля'); return; }
+            const newStart = new Date(startVal).getTime();
+            const newEnd = new Date(endVal).getTime();
+            if (newEnd < newStart) { alert('Конец не может быть раньше начала'); return; }
+            const history = getHistory();
+            history[index] = {start: newStart, end: newEnd, duration: formatDuration(newEnd - newStart)};
+            localStorage.setItem('workHistory', JSON.stringify(history));
+            closeEditModal();
+            updateUI();
+        }
+        function deleteRecord(index) {
+            if (confirm('Удалить эту сменщ>')) {
+                const history = getHistory();
+                history.splice(index, 1);
+                localStorage.setItem('workHistory', JSON.stringify(history));
+                updateUI();
+            }
+        }
+        function clearHistory() {
+            if (confirm('Удалить всю историю смен?')) {
+                localStorage.removeItem('workHistory');
+                updateUI();
+            }
+        }
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+        }
+        updateUI();
+    </script>
+</body>
+</html>
